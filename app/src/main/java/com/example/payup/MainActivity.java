@@ -10,7 +10,6 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openHomeActivity() {
-        Intent intent = new Intent(this, HomeActivity.class);
+        Intent intent = new Intent(this, TaskListActivity.class);
         startActivity(intent);
     }
 

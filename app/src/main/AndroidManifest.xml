@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name=".HomeActivity"
+            android:name=".TaskListActivity"
             android:exported="true">
         </activity>
     </application>
