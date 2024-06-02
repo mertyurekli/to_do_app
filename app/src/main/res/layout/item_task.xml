@@ -2,16 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="32sp">
 
 
+    <CheckBox
+        android:id="@+id/checkBox2"
+        android:layout_width="28dp"
+        android:layout_height="24dp" />
+
     <TextView
         android:id="@+id/textViewTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:textAppearanceMedium"
         android:text="Task Title"
+        android:textAppearance="?android:textAppearanceMedium"
         android:textColor="@android:color/black" />
 
 </LinearLayout>
