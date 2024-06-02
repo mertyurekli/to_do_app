@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -8,15 +10,21 @@
 
     <CheckBox
         android:id="@+id/checkBox2"
-        android:layout_width="28dp"
-        android:layout_height="24dp" />
+        android:layout_width="31dp"
+        android:layout_height="33dp"
+        app:layout_constraintEnd_toStartOf="@+id/textViewTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewTitle"
-        android:layout_width="330dp"
-        android:layout_height="wrap_content"
+        android:layout_width="299dp"
+        android:layout_height="26dp"
         android:text="Task Title"
         android:textAppearance="?android:textAppearanceMedium"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/checkBox2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
