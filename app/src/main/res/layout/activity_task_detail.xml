@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".TaskDetailActivity">
 
     <TextView
         android:id="@+id/textView"
@@ -95,7 +95,7 @@
         android:onClick="onClickSaveButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@drawable/baseline_done_24" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

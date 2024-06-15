@@ -13,7 +13,7 @@
         android:theme="@style/Theme.PayUp"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".TaskListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,9 +23,10 @@
         </activity>
 
         <activity
-            android:name=".TaskListActivity"
+            android:name=".TaskDetailActivity"
             android:exported="true">
         </activity>
+
     </application>
 
 </manifest>
