@@ -26,8 +26,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:navigationIcon="@drawable/baseline_arrow_back_24"
-            app:title="To Do App" />
+            app:title="Task List" />
 
         <View
             android:id="@+id/left_clickable_area"
