@@ -1,8 +1,12 @@
-package com.example.payup;
+package com.example.payup.viewmodel;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+
+import com.example.payup.repository.TaskRepository;
+import com.example.payup.entities.Task;
+
 import java.util.List;
 
 public class TaskViewModel extends AndroidViewModel {

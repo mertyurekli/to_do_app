@@ -1,6 +1,5 @@
 package com.example.payup;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -16,6 +15,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.payup.entities.Task;
+import com.example.payup.viewmodel.TaskViewModel;
 
 public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
 

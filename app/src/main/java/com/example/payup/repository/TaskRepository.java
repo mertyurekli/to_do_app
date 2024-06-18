@@ -1,6 +1,10 @@
-package com.example.payup;
+package com.example.payup.repository;
 import android.content.Context;
 import androidx.lifecycle.LiveData;
+
+import com.example.payup.TaskDatabase;
+import com.example.payup.dao.TaskDao;
+import com.example.payup.entities.Task;
 
 import java.util.List;
 

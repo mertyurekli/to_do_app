@@ -5,13 +5,20 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {Task.class}, version = 2) // Incremented version number if schema changed
+import com.example.payup.dao.TaskDao;
+import com.example.payup.dao.TaskListDao;
+import com.example.payup.entities.Task;
+import com.example.payup.entities.TaskList;
+
+@Database(entities = {Task.class, TaskList.class}, version = 3) // Include TaskList entity
 public abstract class TaskDatabase extends RoomDatabase {
     public abstract TaskDao taskDao();
+    public abstract TaskListDao taskListDao();
 
     private static volatile TaskDatabase INSTANCE;
 
-    static TaskDatabase getDatabase(final Context context) {
+    // Make this method public so it can be accessed from other packages
+    public static TaskDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (TaskDatabase.class) {
                 if (INSTANCE == null) {
