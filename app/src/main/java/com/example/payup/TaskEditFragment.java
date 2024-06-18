@@ -42,6 +42,8 @@ public class TaskEditFragment extends Fragment {
         if (getArguments() != null) {
             taskId = getArguments().getInt("TASK_ID", -1);
         }
+
+
     }
 
     @Override
