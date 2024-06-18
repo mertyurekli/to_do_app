@@ -1,72 +1,67 @@
 package com.example.payup;
 
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
-/**
- * Created by thorsten on 21.03.20.
- */
-
+@Entity(tableName = "tasks")
 public class Task {
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+    private String name;
+    private String description;
+    private boolean done;
 
-    // simple ID generator
-    private static int MAX_ID = 0;
+    public String date;
 
-    private int mId;
-    private String mShortName;
-    private String mDescription;
-    private Date mCreationDate;
-    private boolean mDone;
+    // Constructors
+    public Task() {}
 
-    public Task(String shortName) {
-        this.mId = MAX_ID++;
-        this.mShortName = shortName;
-        this.mCreationDate = GregorianCalendar.getInstance().getTime();
+    public Task(String name, String description, String date, boolean done) {
+        this.name = name;
+        this.description = description;
+        this.done = done;
+        this.date = date;
+    }
+    public String getDate() {
+        return this.date;
     }
 
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    // Getters and Setters
     public int getId() {
-        return this.mId;
+        return id;
     }
 
-    public String getShortName() {
-        return mShortName;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setShortName(String shortName) {
-        this.mShortName = shortName;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
-        return mDescription;
+        return description;
     }
 
     public void setDescription(String description) {
-        this.mDescription = description;
-    }
-
-    public Date getCreationDate() {
-        return mCreationDate;
+        this.description = description;
     }
 
     public boolean isDone() {
-        return mDone;
+        return done;
     }
 
     public void setDone(boolean done) {
-        this.mDone = done;
+        this.done = done;
     }
 
-    @Override
-    public String toString() {
-        return mShortName;
-    }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Task) {
-            return this.getId() == ((Task) obj).getId();
-        }
-        return false;
-    }
 }
