@@ -53,7 +53,7 @@ public class TaskListFragment extends Fragment {
         mTaskViewModel.getFilteredTasks().observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
             @Override
             public void onChanged(@Nullable final List<Task> tasks) {
-                adapter.setDisplayedTasks(tasks, isFiltering(tasks));
+                adapter.setDisplayedTasks(tasks, mTaskViewModel.getIsFiltering().getValue());
             }
         });
 
@@ -71,7 +71,6 @@ public class TaskListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mTaskViewModel.setFilter(mTaskViewModel.getAllTasks());
-                adapter.setDisplayedTasks(mTaskViewModel.getAllTasks().getValue(), false);
             }
         });
 
@@ -79,7 +78,6 @@ public class TaskListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mTaskViewModel.setFilter(mTaskViewModel.getUnfinishedTasks());
-                adapter.setDisplayedTasks(mTaskViewModel.getUnfinishedTasks().getValue(), true);
             }
         });
 
@@ -92,18 +90,6 @@ public class TaskListFragment extends Fragment {
         });
 
         return rootView;
-    }
-
-    private boolean isFiltering(List<Task> tasks) {
-        if (tasks == null) {
-            return false;
-        }
-        for (Task task : tasks) {
-            if (task.isDone()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void openTaskEditFragmentToAddTask() {

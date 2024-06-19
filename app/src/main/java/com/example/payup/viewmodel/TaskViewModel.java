@@ -4,6 +4,7 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.payup.entities.Task;
 import com.example.payup.repository.TaskRepository;
@@ -16,6 +17,7 @@ public class TaskViewModel extends AndroidViewModel {
     private LiveData<List<Task>> mFinishedTasks;
     private LiveData<List<Task>> mUnfinishedTasks;
     private final MediatorLiveData<List<Task>> filteredTasks = new MediatorLiveData<>();
+    private final MutableLiveData<Boolean> isFiltering = new MutableLiveData<>(false);
 
     private LiveData<List<Task>> currentSource;
 
@@ -44,12 +46,17 @@ public class TaskViewModel extends AndroidViewModel {
         return filteredTasks;
     }
 
+    public LiveData<Boolean> getIsFiltering() {
+        return isFiltering;
+    }
+
     public void setFilter(LiveData<List<Task>> tasks) {
         if (currentSource != null) {
             filteredTasks.removeSource(currentSource);
         }
         currentSource = tasks;
         filteredTasks.addSource(tasks, filteredTasks::setValue);
+        isFiltering.setValue(tasks == mUnfinishedTasks);
     }
 
     public void deleteFinishedTasks() {
@@ -70,6 +77,8 @@ public class TaskViewModel extends AndroidViewModel {
 
     public void update(Task task) {
         mRepository.update(task);
+        // Reapply filter after updating a task
+        setFilter(currentSource);
     }
 
     public void delete(Task task) {

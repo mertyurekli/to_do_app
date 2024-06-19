@@ -2,8 +2,6 @@ package com.example.payup.adapter;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +32,6 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
     private TaskViewModel taskViewModel;
     private List<Task> displayedTasks = new ArrayList<>();
     private boolean isFiltering = false;
-    private final Handler handler = new Handler(Looper.getMainLooper());
     private boolean isUpdating = false;
 
     public TaskAdapter(@NonNull DiffUtil.ItemCallback<Task> diffCallback, FragmentActivity activity, FragmentManager fragmentManager, TaskViewModel taskViewModel) {
@@ -93,13 +90,9 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
             if (current.isDone() != isChecked) {
                 isUpdating = true;
                 current.setDone(isChecked);
-                handler.postDelayed(() -> {
-                    taskViewModel.update(current);
-                    if (isFiltering) {
-                        holder.taskDoneCheckBox.post(() -> notifyItemChanged(holder.getAdapterPosition()));
-                    }
-                    isUpdating = false;
-                }, 200); // Debounce delay
+                taskViewModel.update(current);
+                // Delay to avoid immediate hiding due to filter
+                buttonView.postDelayed(() -> isUpdating = false, 300);
             }
         });
     }
