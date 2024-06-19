@@ -8,16 +8,22 @@ import com.example.payup.dao.TaskListDao;
 import com.example.payup.entities.TaskList;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TaskListRepository {
     private static TaskListRepository INSTANCE;
     private TaskListDao mTaskListDao;
     private LiveData<List<TaskList>> mAllTaskLists;
 
+    private static final ExecutorService databaseWriteExecutor =
+            Executors.newFixedThreadPool(4);
+
     private TaskListRepository(Context context) {
         TaskDatabase db = TaskDatabase.getDatabase(context); // Access public method
         mTaskListDao = db.taskListDao();
         mAllTaskLists = mTaskListDao.getAllTaskLists();
+        ensureDefaultTaskList();
     }
 
     public static TaskListRepository getInstance(Context context) {
@@ -29,6 +35,15 @@ public class TaskListRepository {
             }
         }
         return INSTANCE;
+    }
+
+    private void ensureDefaultTaskList() {
+        databaseWriteExecutor.execute(() -> {
+            if (mTaskListDao.getTaskListCount() == 0) {
+                TaskList defaultTaskList = new TaskList("Default Task List");
+                mTaskListDao.insert(defaultTaskList);
+            }
+        });
     }
 
     public LiveData<List<TaskList>> getAllTaskLists() {

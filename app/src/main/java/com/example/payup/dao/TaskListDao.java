@@ -29,4 +29,7 @@ public interface TaskListDao {
     @Delete
     void delete(TaskList taskList);
 
+    @Query("SELECT COUNT(*) FROM task_lists")
+    int getTaskListCount();
+
 }

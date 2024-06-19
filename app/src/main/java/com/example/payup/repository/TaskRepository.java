@@ -13,10 +13,16 @@ public class TaskRepository {
     private TaskDao mTaskDao;
     private LiveData<List<Task>> mAllTasks;
 
+    private LiveData<List<Task>> mFinishedTasks;
+
+    private LiveData<List<Task>> mUnfinishedTasks;
+
+
     private TaskRepository(Context context) {
         TaskDatabase db = TaskDatabase.getDatabase(context);
         mTaskDao = db.taskDao();
         mAllTasks = mTaskDao.getAllTasks();
+        mFinishedTasks = mTaskDao.getFinishedTasks();
     }
 
     public static TaskRepository getInstance(Context context) {
@@ -29,6 +35,15 @@ public class TaskRepository {
         }
         return INSTANCE;
     }
+    public LiveData<List<Task>> getFinishedTasks() {
+        return mFinishedTasks;
+    }
+
+
+    public LiveData<List<Task>> getUnfinishedTasks() {
+        return mTaskDao.getUnfinishedTasks();
+    }
+
 
     public LiveData<List<Task>> getAllTasks() {
         return mAllTasks;
@@ -90,5 +105,24 @@ public class TaskRepository {
             return null;
         }
     }
+
+    public void deleteFinishedTasks() {
+        new deleteFinishedTasksAsyncTask(mTaskDao).execute();
+    }
+
+    private static class deleteFinishedTasksAsyncTask extends android.os.AsyncTask<Void, Void, Void> {
+        private TaskDao mAsyncTaskDao;
+
+        deleteFinishedTasksAsyncTask(TaskDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final Void... params) {
+            mAsyncTaskDao.deleteFinishedTasks();
+            return null;
+        }
+    }
+
 
 }

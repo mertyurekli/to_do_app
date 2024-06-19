@@ -12,15 +12,30 @@ import java.util.List;
 public class TaskViewModel extends AndroidViewModel {
     private TaskRepository mRepository;
     private LiveData<List<Task>> mAllTasks;
-
+    private LiveData<List<Task>> mFinishedTasks;
+    private LiveData<List<Task>> mUnfinishedTasks;
     public TaskViewModel(Application application) {
         super(application);
         mRepository = TaskRepository.getInstance(application);
         mAllTasks = mRepository.getAllTasks();
+        mFinishedTasks = mRepository.getFinishedTasks();
+        mUnfinishedTasks = mRepository.getUnfinishedTasks();
     }
 
     public LiveData<List<Task>> getAllTasks() {
         return mAllTasks;
+    }
+
+    public LiveData<List<Task>> getFinishedTasks() {
+        return mFinishedTasks;
+    }
+
+    public LiveData<List<Task>> getUnfinishedTasks() {
+        return mUnfinishedTasks;
+    }
+
+    public void deleteFinishedTasks() {
+        mRepository.deleteFinishedTasks();
     }
 
     public LiveData<Task> getTaskById(int id) {

@@ -62,6 +62,12 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
                 activity.startActivity(intent);
             }
         });
+
+        holder.taskDoneCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Update the Task's done status
+            current.setDone(isChecked);
+            taskViewModel.update(current);
+        });
     }
 
     static class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -92,4 +98,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
             return oldItem.equals(newItem);
         }
     }
+
+
+
 }

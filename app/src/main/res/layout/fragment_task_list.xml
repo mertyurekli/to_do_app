@@ -12,7 +12,6 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/AddTaskButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/item_task" />
@@ -21,11 +20,43 @@
         android:id="@+id/AddTaskButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="20dp"
         android:text="Add Task"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/r_view"
-        app:layout_constraintVertical_bias="0.1" />
+        app:layout_constraintTop_toBottomOf="@+id/r_view" />
+
+    <Button
+        android:id="@+id/showAllTasksButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="233dp"
+        android:text="Show All Tasks"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/showUnfinishedTasksButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/showAllTasksButton"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="14dp"
+        android:text="Show Unfinished Tasks"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/showAllTasksButton" />
+
+    <Button
+        android:id="@+id/deleteFinishedTasksButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/showUnfinishedTasksButton"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="14dp"
+        android:text="Delete Finished Tasks"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/showUnfinishedTasksButton" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
