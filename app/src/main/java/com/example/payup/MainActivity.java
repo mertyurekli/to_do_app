@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         // Use the appropriate layout for phones and tablets
