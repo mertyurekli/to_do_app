@@ -2,6 +2,8 @@ package com.example.payup.adapter;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +35,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
     private List<Task> displayedTasks = new ArrayList<>();
     private boolean isFiltering = false;
     private boolean isUpdating = false;
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     public TaskAdapter(@NonNull DiffUtil.ItemCallback<Task> diffCallback, FragmentActivity activity, FragmentManager fragmentManager, TaskViewModel taskViewModel) {
         super(diffCallback);
@@ -90,9 +93,16 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
             if (current.isDone() != isChecked) {
                 isUpdating = true;
                 current.setDone(isChecked);
-                taskViewModel.update(current);
-                // Delay to avoid immediate hiding due to filter
-                buttonView.postDelayed(() -> isUpdating = false, 300);
+                handler.postDelayed(() -> {
+                    taskViewModel.update(current);
+                    // Delay to avoid immediate hiding due to filter
+                    handler.post(() -> {
+                        if (isFiltering) {
+                            notifyItemChanged(holder.getAdapterPosition());
+                        }
+                        isUpdating = false;
+                    });
+                }, 300); // Debounce delay
             }
         });
     }
@@ -105,7 +115,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
     public void setDisplayedTasks(List<Task> tasks, boolean isFiltering) {
         this.isFiltering = isFiltering;
         this.displayedTasks = tasks != null ? tasks : new ArrayList<>();
-        notifyDataSetChanged();
+        handler.post(() -> notifyDataSetChanged());  // Ensure update happens after layout computation
     }
 
     static class TaskViewHolder extends RecyclerView.ViewHolder {
