@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.payup.adapter.TaskAdapter;
 import com.example.payup.entities.Task;
 import com.example.payup.viewmodel.TaskViewModel;
 

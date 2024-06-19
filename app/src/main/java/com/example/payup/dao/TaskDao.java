@@ -34,7 +34,8 @@ public interface TaskDao {
     @Update
     void update(Task task);
 
-
+    @Query("SELECT * FROM tasks WHERE taskListId=:taskListId")
+    LiveData<List<Task>> getTasksByTaskListId(int taskListId);
 
     @Delete
     void delete(Task task);

@@ -54,6 +54,9 @@ public class TaskRepository {
     }
 
     public void insert(Task task) {
+        if (task.getTaskListId() == 0) {
+            task.setTaskListId(1);  // Set default task list ID if not specified
+        }
         new insertAsyncTask(mTaskDao).execute(task);
     }
 

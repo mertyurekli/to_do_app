@@ -118,7 +118,7 @@ public class TaskEditFragment extends Fragment {
         String description = descriptionEditText.getText().toString();
         boolean isDone = doneCheckBox.isChecked();
         String date = dateButton.getText().toString();
-        Task task = new Task(name, description, date, isDone);
+        Task task = new Task(name, description, date, isDone, 1);
 
 
         if (isNewTask) {

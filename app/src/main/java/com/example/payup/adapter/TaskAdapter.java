@@ -1,4 +1,4 @@
-package com.example.payup;
+package com.example.payup.adapter;
 
 import android.os.Bundle;
 import android.content.Intent;
@@ -16,6 +16,9 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.payup.MainActivity;
+import com.example.payup.R;
+import com.example.payup.TaskEditFragment;
 import com.example.payup.entities.Task;
 import com.example.payup.viewmodel.TaskViewModel;
 
@@ -25,7 +28,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
     private FragmentManager fragmentManager;
     private TaskViewModel taskViewModel;
 
-    protected TaskAdapter(@NonNull DiffUtil.ItemCallback<Task> diffCallback, FragmentActivity activity, FragmentManager fragmentManager, TaskViewModel taskViewModel) {
+    public TaskAdapter(@NonNull DiffUtil.ItemCallback<Task> diffCallback, FragmentActivity activity, FragmentManager fragmentManager, TaskViewModel taskViewModel) {
         super(diffCallback);
         this.activity = activity;
         this.fragmentManager = fragmentManager;
@@ -86,7 +89,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
         }
     }
 
-    static class TaskDiff extends DiffUtil.ItemCallback<Task> {
+    public static class TaskDiff extends DiffUtil.ItemCallback<Task> {
 
         @Override
         public boolean areItemsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {

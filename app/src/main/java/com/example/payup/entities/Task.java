@@ -2,25 +2,28 @@ package com.example.payup.entities;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.ForeignKey;
 
-@Entity(tableName = "tasks")
+@Entity(tableName = "tasks", foreignKeys = @ForeignKey(entity = TaskList.class, parentColumns = "id", childColumns = "taskListId", onDelete = ForeignKey.CASCADE))
 public class Task {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String name;
     private String description;
     private boolean done;
+    private int taskListId;
 
     public String date;
 
     // Constructors
     public Task() {}
 
-    public Task(String name, String description, String date, boolean done) {
+    public Task(String name, String description, String date, boolean done,  int taskListId) {
         this.name = name;
         this.description = description;
         this.done = done;
         this.date = date;
+        this.taskListId = taskListId;
     }
     public String getDate() {
         return this.date;
@@ -63,5 +66,12 @@ public class Task {
         this.done = done;
     }
 
+    public int getTaskListId() {
+        return taskListId;
+    }
+
+    public void setTaskListId(int taskListId) {
+        this.taskListId = taskListId;
+    }
 
 }
