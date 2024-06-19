@@ -1,6 +1,8 @@
 package com.example.payup;
 
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -28,13 +30,12 @@ public class MainActivity extends AppCompatActivity {
     private TaskListViewModel taskListViewModel;
     private com.example.payup.TaskListAdapter adapter;
 
+    private float startX;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //setContentView(R.layout.activity_main);
-
-        drawerLayout = findViewById(R.id.drawer_layout);
         // Use the appropriate layout for phones and tablets
         if (getResources().getBoolean(R.bool.isTablet)) {
             setContentView(R.layout.activity_main_tablet);
@@ -46,15 +47,37 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         View leftClickableArea = findViewById(R.id.left_clickable_area);
-        leftClickableArea.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    drawerLayout.closeDrawer(GravityCompat.START);
-                } else {
-                    drawerLayout.openDrawer(GravityCompat.START);
+        drawerLayout = findViewById(R.id.drawer_layout);
+
+        leftClickableArea.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = event.getX();
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        float endX = event.getX();
+                        if (endX - startX > 100) { // Belirli bir mesafe sürüklenmişse
+                            drawerLayout.openDrawer(GravityCompat.START);
+                            return true;
+                        }
+                        break;
                 }
+                return false;
             }
         });
+
+
+//        leftClickableArea.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+//                    drawerLayout.closeDrawer(GravityCompat.START);
+//                } else {
+//                    drawerLayout.openDrawer(GravityCompat.START);
+//                }
+//            }
+//        });
 
         // Set toolbar navigation click listener
         toolbar.setNavigationOnClickListener(v -> openTaskListFragment());
