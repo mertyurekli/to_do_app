@@ -44,7 +44,9 @@ public class TaskRepository {
         return mTaskDao.getUnfinishedTasks();
     }
 
-
+    public LiveData<List<Task>> getTasksByTaskListId(int taskListId) {
+        return mTaskDao.getTasksByTaskListId(taskListId);
+    }
     public LiveData<List<Task>> getAllTasks() {
         return mAllTasks;
     }

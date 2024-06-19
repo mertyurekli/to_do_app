@@ -1,7 +1,9 @@
 package com.example.payup.adapter;
 
-import android.os.Bundle;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,17 +24,30 @@ import com.example.payup.TaskEditFragment;
 import com.example.payup.entities.Task;
 import com.example.payup.viewmodel.TaskViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
 
     private FragmentActivity activity;
     private FragmentManager fragmentManager;
     private TaskViewModel taskViewModel;
+    private List<Task> displayedTasks = new ArrayList<>();
+    private boolean isFiltering = false;
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private boolean isUpdating = false;
 
     public TaskAdapter(@NonNull DiffUtil.ItemCallback<Task> diffCallback, FragmentActivity activity, FragmentManager fragmentManager, TaskViewModel taskViewModel) {
         super(diffCallback);
         this.activity = activity;
         this.fragmentManager = fragmentManager;
         this.taskViewModel = taskViewModel;
+        setHasStableIds(true);  // Enable stable IDs
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return displayedTasks.get(position).getId();  // Use task ID as stable ID
     }
 
     @NonNull
@@ -44,8 +59,8 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        Task current = getItem(position);
-        holder.bind(current.getName(), current.isDone());
+        Task current = displayedTasks.get(position);
+        holder.bind(current);
 
         holder.itemView.setOnClickListener(v -> {
             Toast.makeText(activity, "Task: " + current.getName() + "\nDescription: " + current.getDescription(), Toast.LENGTH_SHORT).show();
@@ -66,11 +81,38 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
             }
         });
 
+        // Remove any existing listener to avoid unwanted triggers
+        holder.taskDoneCheckBox.setOnCheckedChangeListener(null);
+        holder.taskDoneCheckBox.setChecked(current.isDone());
+
+        // Set the new listener
         holder.taskDoneCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // Update the Task's done status
-            current.setDone(isChecked);
-            taskViewModel.update(current);
+            if (isUpdating) {
+                return;
+            }
+            if (current.isDone() != isChecked) {
+                isUpdating = true;
+                current.setDone(isChecked);
+                handler.postDelayed(() -> {
+                    taskViewModel.update(current);
+                    if (isFiltering) {
+                        holder.taskDoneCheckBox.post(() -> notifyItemChanged(holder.getAdapterPosition()));
+                    }
+                    isUpdating = false;
+                }, 200); // Debounce delay
+            }
         });
+    }
+
+    @Override
+    public int getItemCount() {
+        return displayedTasks != null ? displayedTasks.size() : 0;
+    }
+
+    public void setDisplayedTasks(List<Task> tasks, boolean isFiltering) {
+        this.isFiltering = isFiltering;
+        this.displayedTasks = tasks != null ? tasks : new ArrayList<>();
+        notifyDataSetChanged();
     }
 
     static class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -83,9 +125,9 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
             taskDoneCheckBox = itemView.findViewById(R.id.checkBox2);
         }
 
-        public void bind(String title, boolean isDone) {
-            taskTitleView.setText(title);
-            taskDoneCheckBox.setChecked(isDone);
+        public void bind(Task task) {
+            taskTitleView.setText(task.getName());
+            taskDoneCheckBox.setChecked(task.isDone());
         }
     }
 
@@ -101,7 +143,4 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
             return oldItem.equals(newItem);
         }
     }
-
-
-
 }

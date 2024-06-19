@@ -3,7 +3,8 @@
 
     <item
         android:id="@+id/nav_create_task_list"
-        android:title="Create Task List" />
+        android:title="Create Task List"
+        />/>
 
 
 </menu>

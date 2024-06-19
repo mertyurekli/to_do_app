@@ -1,4 +1,4 @@
-package com.example.payup;
+package com.example.payup.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.payup.R;
 import com.example.payup.entities.TaskList;
 
 import java.util.List;

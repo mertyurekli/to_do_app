@@ -49,10 +49,11 @@ public class TaskListFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        mTaskViewModel.getAllTasks().observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
+        // Observe filtered tasks
+        mTaskViewModel.getFilteredTasks().observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
             @Override
             public void onChanged(@Nullable final List<Task> tasks) {
-                adapter.submitList(tasks);
+                adapter.setDisplayedTasks(tasks, isFiltering(tasks));
             }
         });
 
@@ -69,26 +70,40 @@ public class TaskListFragment extends Fragment {
         showAllTasksButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickShowAllTasks();
+                mTaskViewModel.setFilter(mTaskViewModel.getAllTasks());
+                adapter.setDisplayedTasks(mTaskViewModel.getAllTasks().getValue(), false);
             }
         });
 
         showUnfinishedTasksButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickShowUnfinishedTasks();
+                mTaskViewModel.setFilter(mTaskViewModel.getUnfinishedTasks());
+                adapter.setDisplayedTasks(mTaskViewModel.getUnfinishedTasks().getValue(), true);
             }
         });
 
         deleteFinishedTasksButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickDeleteFinishedTasks();
+                mTaskViewModel.deleteFinishedTasks();
+                Toast.makeText(getContext(), "Finished tasks deleted", Toast.LENGTH_SHORT).show();
             }
         });
 
-
         return rootView;
+    }
+
+    private boolean isFiltering(List<Task> tasks) {
+        if (tasks == null) {
+            return false;
+        }
+        for (Task task : tasks) {
+            if (task.isDone()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void openTaskEditFragmentToAddTask() {
@@ -103,32 +118,5 @@ public class TaskListFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         }
-    }
-
-    // Method called when Show All Tasks button is clicked
-    public void onClickShowAllTasks() {
-        mTaskViewModel.getAllTasks().observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
-            @Override
-            public void onChanged(@Nullable final List<Task> tasks) {
-                adapter.submitList(tasks);
-            }
-        });
-    }
-
-    // Method called when Show Unfinished Tasks button is clicked
-    public void onClickShowUnfinishedTasks() {
-        mTaskViewModel.getUnfinishedTasks().observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
-            @Override
-            public void onChanged(@Nullable final List<Task> tasks) {
-                adapter.submitList(tasks);
-            }
-        });
-    }
-
-    // Method called when Delete Finished Tasks button is clicked
-    // Method called when Delete Finished Tasks button is clicked
-    public void onClickDeleteFinishedTasks() {
-        mTaskViewModel.deleteFinishedTasks();
-        Toast.makeText(getContext(), "Finished tasks deleted", Toast.LENGTH_SHORT).show();
     }
 }
