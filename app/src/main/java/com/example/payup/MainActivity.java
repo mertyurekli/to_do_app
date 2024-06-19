@@ -25,7 +25,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle toggle;
     private TaskListViewModel taskListViewModel;
     private com.example.payup.TaskListAdapter adapter;
 
