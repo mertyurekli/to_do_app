@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private TaskListViewModel taskListViewModel;
     private TaskListAdapter adapter;
     private TaskViewModel taskViewModel;
-    private int selectedTaskListId = -1;  // Initialize with an invalid ID
+    private int selectedTaskListId = 1;
 
     private float startX;
     private Toolbar toolbar;

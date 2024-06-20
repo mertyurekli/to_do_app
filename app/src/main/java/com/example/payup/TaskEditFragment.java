@@ -34,6 +34,8 @@ public class TaskEditFragment extends Fragment {
     private int taskId = -1;  // Task ID
     private int taskListId = -1;  // Task List ID
 
+    private Observer<Task> taskObserver;
+
     public TaskEditFragment() {
         // Required empty public constructor
     }
@@ -46,6 +48,14 @@ public class TaskEditFragment extends Fragment {
             taskId = getArguments().getInt("TASK_ID", -1);
             taskListId = getArguments().getInt("TASK_LIST_ID", -1);  // Retrieve the TaskList ID
         }
+
+        // Observe selected task list ID
+        mTaskViewModel.getSelectedTaskListId().observe(this, selectedId -> {
+            if (selectedId != null) {
+                taskListId = selectedId;
+                mTaskViewModel.setFilter(mTaskViewModel.getAllTasks(taskListId));
+            }
+        });
     }
 
     @Override
@@ -64,7 +74,7 @@ public class TaskEditFragment extends Fragment {
 
         if (taskId != -1) {
             isNewTask = false;
-            mTaskViewModel.getTaskById(taskId).observe(getViewLifecycleOwner(), task -> {
+            taskObserver = task -> {
                 if (task != null) {
                     nameEditText.setText(task.getName());
                     doneCheckBox.setChecked(task.isDone());
@@ -72,19 +82,9 @@ public class TaskEditFragment extends Fragment {
                     dateButton.setText(task.getDate());
                     taskListId = task.getTaskListId();
                 }
-                Toast.makeText(getContext(), "Task List ID: " + taskListId, Toast.LENGTH_SHORT).show();
-            });
+            };
+            mTaskViewModel.getTaskById(taskId).observe(getViewLifecycleOwner(), taskObserver);
         }
-
-        // Move the observer to onCreateView
-        mTaskViewModel.getSelectedTaskListId().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer selectedId) {
-                if (selectedId != null) {
-                    taskListId = selectedId;
-                }
-            }
-        });
 
         FloatingActionButton saveButton = view.findViewById(R.id.floatingActionButton);
         saveButton.setOnClickListener(v -> onClickSaveButton());
@@ -136,7 +136,6 @@ public class TaskEditFragment extends Fragment {
             return; // Exit method without saving
         }
 
-        // Ensure taskListId is used
         if (taskListId == -1) {
             // Handle the case when taskListId is not set
             Toast.makeText(getContext(), "Task List ID is invalid", Toast.LENGTH_SHORT).show();
@@ -158,11 +157,23 @@ public class TaskEditFragment extends Fragment {
         if (!getResources().getBoolean(R.bool.isTablet)) {
             requireActivity().getSupportFragmentManager().popBackStack();
         } else {
-            Toast.makeText(requireContext(), "Task saved", Toast.LENGTH_SHORT).show();
-            nameEditText.setText("");
-            descriptionEditText.setText("");
-            doneCheckBox.setChecked(false);
-            dateButton.setText(getCurrentDate());
+            // Remove observers to prevent old data being loaded again
+            if (taskObserver != null) {
+                mTaskViewModel.getTaskById(taskId).removeObserver(taskObserver);
+            }
+            // Reset the fragment for a clean state
+            resetTaskDetails();
         }
+    }
+
+    private void resetTaskDetails() {
+        nameEditText.setText("");
+        descriptionEditText.setText("");
+        doneCheckBox.setChecked(false);
+        dateButton.setText(getCurrentDate());
+
+        // Reset taskId and isNewTask for a new task
+        taskId = -1;
+        isNewTask = true;
     }
 }
