@@ -42,10 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private float startX;
     private Toolbar toolbar;
 
-    public static final int MENU_ITEM_BUTTON1 = 1;
-    public static final int MENU_ITEM_BUTTON2 = 2;
-    public static final int MENU_ITEM_BUTTON3 = 3;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,9 +136,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.layout.toolbar_menu, menu);
-        menu.findItem(R.id.action_button1).setIntent(new Intent().putExtra("MENU_ID", MENU_ITEM_BUTTON1));
-        menu.findItem(R.id.action_button2).setIntent(new Intent().putExtra("MENU_ID", MENU_ITEM_BUTTON2));
-        menu.findItem(R.id.action_button3).setIntent(new Intent().putExtra("MENU_ID", MENU_ITEM_BUTTON3));
         return true;
     }
 
@@ -152,9 +145,9 @@ public class MainActivity extends AppCompatActivity {
         // Always show menu items in tablet mode
         boolean isTablet = getResources().getBoolean(R.bool.isTablet);
         if (isTablet) {
-            menu.findItem(R.id.action_button1).setVisible(true);
-            menu.findItem(R.id.action_button2).setVisible(true);
-            menu.findItem(R.id.action_button3).setVisible(true);
+            menu.findItem(R.id.action_show_all_tasks).setVisible(true);
+            menu.findItem(R.id.action_show_unfinished_tasks).setVisible(true);
+            menu.findItem(R.id.action_delete_finished_tasks).setVisible(true);
         } else {
             // Get the current fragment
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -162,13 +155,13 @@ public class MainActivity extends AppCompatActivity {
 
             // Hide menu items if the current fragment is TaskEditFragment
             if (currentFragment instanceof TaskEditFragment) {
-                menu.findItem(R.id.action_button1).setVisible(false);
-                menu.findItem(R.id.action_button2).setVisible(false);
-                menu.findItem(R.id.action_button3).setVisible(false);
+                menu.findItem(R.id.action_show_all_tasks).setVisible(false);
+                menu.findItem(R.id.action_show_unfinished_tasks).setVisible(false);
+                menu.findItem(R.id.action_delete_finished_tasks).setVisible(false);
             } else {
-                menu.findItem(R.id.action_button1).setVisible(true);
-                menu.findItem(R.id.action_button2).setVisible(true);
-                menu.findItem(R.id.action_button3).setVisible(true);
+                menu.findItem(R.id.action_show_all_tasks).setVisible(true);
+                menu.findItem(R.id.action_show_unfinished_tasks).setVisible(true);
+                menu.findItem(R.id.action_delete_finished_tasks).setVisible(true);
             }
         }
         return true;
@@ -186,21 +179,40 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        int menuId = item.getIntent().getIntExtra("MENU_ID", -1);
-        switch (menuId) {
-            case MENU_ITEM_BUTTON1:
-                showToast("Button 1 clicked");
-                return true;
-            case MENU_ITEM_BUTTON2:
-                showToast("Button 2 clicked");
-                return true;
-            case MENU_ITEM_BUTTON3:
-                showToast("Button 3 clicked");
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_show_all_tasks) {
+            showAllTasks();
+            return true;
+        } else if (itemId == R.id.action_show_unfinished_tasks) {
+            showUnfinishedTasks();
+            return true;
+        } else if (itemId == R.id.action_delete_finished_tasks) {
+            deleteFinishedTasks();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
+
+    private void showAllTasks() {
+        if (selectedTaskListId != -1) {
+            taskViewModel.setFilter(taskViewModel.getAllTasks(selectedTaskListId));
+        }
+    }
+
+    private void showUnfinishedTasks() {
+        if (selectedTaskListId != -1) {
+            taskViewModel.setFilter(taskViewModel.getUnfinishedTasks(selectedTaskListId));
+        }
+    }
+
+    private void deleteFinishedTasks() {
+        if (selectedTaskListId != -1) {
+            taskViewModel.deleteFinishedTasks();
+            Toast.makeText(this, "Finished tasks deleted", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();

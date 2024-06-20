@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- res/menu/toolbar_menu.xml -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/action_button1"
+        android:id="@+id/action_show_all_tasks"
+        android:title="Show All Tasks"
         android:icon="@drawable/menu"
-        android:title="Button 1"
-        android:showAsAction="always" />
+        android:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/action_button2"
+        android:id="@+id/action_show_unfinished_tasks"
+        android:title="Show Unfinished Tasks"
         android:icon="@drawable/menu"
-        android:title="Button 2"
-        android:showAsAction="always" />
+        android:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/action_button3"
+        android:id="@+id/action_delete_finished_tasks"
+        android:title="Delete Finished Tasks"
         android:icon="@drawable/menu"
-        android:title="Button 3"
-        android:showAsAction="always" />
+        android:showAsAction="ifRoom"/>
 </menu>

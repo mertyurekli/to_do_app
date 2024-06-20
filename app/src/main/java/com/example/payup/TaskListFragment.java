@@ -41,9 +41,6 @@ public class TaskListFragment extends Fragment {
 
         RecyclerView recyclerView = rootView.findViewById(R.id.r_view);
         Button addButton = rootView.findViewById(R.id.AddTaskButton);
-        Button showAllTasksButton = rootView.findViewById(R.id.showAllTasksButton);
-        Button showUnfinishedTasksButton = rootView.findViewById(R.id.showUnfinishedTasksButton);
-        Button deleteFinishedTasksButton = rootView.findViewById(R.id.deleteFinishedTasksButton);
 
         mTaskViewModel = new ViewModelProvider(requireActivity()).get(TaskViewModel.class);
 
@@ -81,34 +78,6 @@ public class TaskListFragment extends Fragment {
             public void onClick(View v) {
                 requireActivity().getIntent().removeExtra("TASK_ID");
                 openTaskEditFragmentToAddTask();
-            }
-        });
-
-        showAllTasksButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (taskListId != -1) {
-                    mTaskViewModel.setFilter(mTaskViewModel.getAllTasks(taskListId));
-                }
-            }
-        });
-
-        showUnfinishedTasksButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (taskListId != -1) {
-                    mTaskViewModel.setFilter(mTaskViewModel.getUnfinishedTasks(taskListId));
-                }
-            }
-        });
-
-        deleteFinishedTasksButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (taskListId != -1) {
-                    mTaskViewModel.deleteFinishedTasks();
-                    Toast.makeText(getContext(), "Finished tasks deleted", Toast.LENGTH_SHORT).show();
-                }
             }
         });
 
