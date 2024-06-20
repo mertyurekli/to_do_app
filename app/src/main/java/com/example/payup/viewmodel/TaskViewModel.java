@@ -17,8 +17,6 @@ public class TaskViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> isFiltering = new MutableLiveData<>(false);
     private final MutableLiveData<Integer> selectedTaskListId = new MutableLiveData<>(1); // Default to 1
 
-    private LiveData<List<Task>> currentSource;
-
     public TaskViewModel(Application application) {
         super(application);
         mRepository = TaskRepository.getInstance(application);
@@ -51,10 +49,6 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
     public void setFilter(LiveData<List<Task>> tasks) {
-        if (currentSource != null) {
-            filteredTasks.removeSource(currentSource);
-        }
-        currentSource = tasks;
         filteredTasks.addSource(tasks, filteredTasks::setValue);
     }
 
@@ -69,9 +63,11 @@ public class TaskViewModel extends AndroidViewModel {
     public LiveData<List<Task>> getAllTasks(int taskListId) {
         return mRepository.getAllTasks(taskListId);
     }
+
     public LiveData<List<Task>> getUnfinishedTasks(int taskListId) {
         return mRepository.getUnfinishedTasks(taskListId);
     }
+
     public void insert(Task task) {
         mRepository.insert(task);
         applyFilter();  // Reapply filter after inserting a task

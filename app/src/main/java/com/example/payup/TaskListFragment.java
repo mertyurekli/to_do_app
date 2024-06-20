@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.payup.R;
+import com.example.payup.TaskEditFragment;
 import com.example.payup.adapter.TaskAdapter;
 import com.example.payup.entities.Task;
 import com.example.payup.viewmodel.TaskViewModel;
@@ -44,14 +46,20 @@ public class TaskListFragment extends Fragment {
 
         mTaskViewModel = new ViewModelProvider(requireActivity()).get(TaskViewModel.class);
 
-        adapter = new TaskAdapter(new TaskAdapter.TaskDiff(), requireActivity(), requireActivity().getSupportFragmentManager(), mTaskViewModel);
+        adapter = new TaskAdapter(requireActivity(), requireActivity().getSupportFragmentManager(), mTaskViewModel);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
+        // Observe tasks and update RecyclerView when ready
         mTaskViewModel.getFilteredTasks().observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
             @Override
             public void onChanged(@Nullable final List<Task> tasks) {
-                adapter.setDisplayedTasks(tasks, mTaskViewModel.getIsFiltering().getValue());
+                if (tasks != null) {
+                    adapter.setTasks(tasks);
+                    recyclerView.setVisibility(View.VISIBLE);
+                } else {
+                    recyclerView.setVisibility(View.GONE);
+                }
             }
         });
 

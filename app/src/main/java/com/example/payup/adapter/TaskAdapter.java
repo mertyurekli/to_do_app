@@ -2,8 +2,6 @@ package com.example.payup.adapter;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.payup.MainActivity;
@@ -27,27 +23,17 @@ import com.example.payup.viewmodel.TaskViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
+public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
     private FragmentActivity activity;
     private FragmentManager fragmentManager;
     private TaskViewModel taskViewModel;
-    private List<Task> displayedTasks = new ArrayList<>();
-    private boolean isFiltering = false;
-    private boolean isUpdating = false;
-    private final Handler handler = new Handler(Looper.getMainLooper());
+    private List<Task> taskList = new ArrayList<>();
 
-    public TaskAdapter(@NonNull DiffUtil.ItemCallback<Task> diffCallback, FragmentActivity activity, FragmentManager fragmentManager, TaskViewModel taskViewModel) {
-        super(diffCallback);
+    public TaskAdapter(FragmentActivity activity, FragmentManager fragmentManager, TaskViewModel taskViewModel) {
         this.activity = activity;
         this.fragmentManager = fragmentManager;
         this.taskViewModel = taskViewModel;
-        setHasStableIds(true);  // Enable stable IDs
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return displayedTasks.get(position).getId();  // Use task ID as stable ID
     }
 
     @NonNull
@@ -59,8 +45,12 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        Task current = displayedTasks.get(position);
+        Task current = taskList.get(position);
+
+        // Detach listener, set state, attach listener
+        holder.taskDoneCheckBox.setOnCheckedChangeListener(null);
         holder.bind(current);
+        holder.taskDoneCheckBox.setChecked(current.isDone());
 
         holder.itemView.setOnClickListener(v -> {
             Toast.makeText(activity, "Task: " + current.getName() + "\nDescription: " + current.getDescription(), Toast.LENGTH_SHORT).show();
@@ -81,41 +71,24 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
             }
         });
 
-        // Remove any existing listener to avoid unwanted triggers
-        holder.taskDoneCheckBox.setOnCheckedChangeListener(null);
-        holder.taskDoneCheckBox.setChecked(current.isDone());
-
-        // Set the new listener
         holder.taskDoneCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isUpdating) {
-                return;
-            }
             if (current.isDone() != isChecked) {
-                isUpdating = true;
                 current.setDone(isChecked);
-                handler.postDelayed(() -> {
-                    taskViewModel.update(current);
-                    // Delay to avoid immediate hiding due to filter
-                    handler.post(() -> {
-                        if (isFiltering) {
-                            notifyItemChanged(holder.getAdapterPosition());
-                        }
-                        isUpdating = false;
-                    });
-                }, 300); // Debounce delay
+                taskViewModel.update(current);
+                // Notify the specific item that its data has changed
+                notifyItemChanged(holder.getAdapterPosition());
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return displayedTasks != null ? displayedTasks.size() : 0;
+        return taskList.size();
     }
 
-    public void setDisplayedTasks(List<Task> tasks, boolean isFiltering) {
-        this.isFiltering = isFiltering;
-        this.displayedTasks = tasks != null ? tasks : new ArrayList<>();
-        handler.post(() -> notifyDataSetChanged());  // Ensure update happens after layout computation
+    public void setTasks(List<Task> tasks) {
+        this.taskList = new ArrayList<>(tasks); // Create a new list to avoid modification issues
+        notifyDataSetChanged(); // This should only be called once initially or when the entire list changes
     }
 
     static class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -131,19 +104,6 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
         public void bind(Task task) {
             taskTitleView.setText(task.getName());
             taskDoneCheckBox.setChecked(task.isDone());
-        }
-    }
-
-    public static class TaskDiff extends DiffUtil.ItemCallback<Task> {
-
-        @Override
-        public boolean areItemsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
-            return oldItem.getId() == newItem.getId();
-        }
-
-        @Override
-        public boolean areContentsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
-            return oldItem.equals(newItem);
         }
     }
 }
