@@ -98,6 +98,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         notifyDataSetChanged(); // This should only be called once initially or when the entire list changes
     }
 
+    public Task getTaskAtPosition(int position) {
+        return taskList.get(position);
+    }
     static class TaskViewHolder extends RecyclerView.ViewHolder {
         private final TextView taskTitleView;
         private final CheckBox taskDoneCheckBox;
