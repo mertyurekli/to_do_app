@@ -25,6 +25,7 @@ public class TaskListFragment extends Fragment {
 
     private TaskViewModel mTaskViewModel;
     private TaskAdapter adapter;
+    private int taskListId = -1;
 
     public TaskListFragment() {
         // Required empty public constructor
@@ -51,7 +52,19 @@ public class TaskListFragment extends Fragment {
             @Override
             public void onChanged(@Nullable final List<Task> tasks) {
                 adapter.setDisplayedTasks(tasks, mTaskViewModel.getIsFiltering().getValue());
+            }
+        });
 
+        // Observe selected task list ID
+        mTaskViewModel.getSelectedTaskListId().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer selectedId) {
+                if (selectedId != null) {
+                    taskListId = selectedId;
+                    mTaskViewModel.getTasksByTaskListId(selectedId).observe(getViewLifecycleOwner(), tasks -> {
+                        mTaskViewModel.setFilter(mTaskViewModel.getTasksByTaskListId(selectedId));
+                    });
+                }
             }
         });
 
@@ -91,7 +104,7 @@ public class TaskListFragment extends Fragment {
     private void openTaskEditFragmentToAddTask() {
         TaskEditFragment fragment = new TaskEditFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("TASK_LIST_ID", mTaskViewModel.getSelectedTaskListId().getValue());  // Get the selected TaskList ID from ViewModel
+        bundle.putInt("TASK_LIST_ID", taskListId);  // Pass the selected TaskList ID
         fragment.setArguments(bundle);
         if (!getResources().getBoolean(R.bool.isTablet)) {
             requireActivity().getSupportFragmentManager().beginTransaction()

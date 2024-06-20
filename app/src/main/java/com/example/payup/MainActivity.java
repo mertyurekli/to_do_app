@@ -2,9 +2,7 @@ package com.example.payup;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -41,9 +39,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize ViewModel
-        taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
-
         // Use the appropriate layout for phones and tablets
         if (getResources().getBoolean(R.bool.isTablet)) {
             setContentView(R.layout.activity_main_tablet);
@@ -68,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             }
+
+            drawerLayout.closeDrawer(GravityCompat.START);  // Automatically close the drawer
             return false;
         });
 
@@ -80,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             fetchTasksForTaskList(selectedTaskListId);
             // Show a toast message with the name and ID of the selected task list
             Toast.makeText(MainActivity.this, "Selected Task List: " + taskList.getName() + ", ID: " + taskList.getId(), Toast.LENGTH_SHORT).show();
+            drawerLayout.closeDrawer(GravityCompat.START);  // Automatically close the drawer
         });
         recyclerView.setAdapter(adapter);
 
@@ -98,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         if (taskId != -1) {
             openTaskEditFragment(taskId);
         }
+        taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
     }
 
     private void showCreateTaskListDialog() {
@@ -152,11 +151,7 @@ public class MainActivity extends AppCompatActivity {
         TaskEditFragment fragment = new TaskEditFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("TASK_ID", taskId);
-        if (taskViewModel != null && taskViewModel.getSelectedTaskListId().getValue() != null) {
-            bundle.putInt("TASK_LIST_ID", taskViewModel.getSelectedTaskListId().getValue());  // Get the selected TaskList ID from ViewModel
-        } else {
-            bundle.putInt("TASK_LIST_ID", -1);  // Fallback value
-        }
+        bundle.putInt("TASK_LIST_ID", selectedTaskListId);  // Pass the selected TaskList ID
         fragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();

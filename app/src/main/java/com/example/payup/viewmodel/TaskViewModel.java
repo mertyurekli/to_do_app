@@ -18,8 +18,7 @@ public class TaskViewModel extends AndroidViewModel {
     private LiveData<List<Task>> mUnfinishedTasks;
     private final MediatorLiveData<List<Task>> filteredTasks = new MediatorLiveData<>();
     private final MutableLiveData<Boolean> isFiltering = new MutableLiveData<>(false);
-
-    private MutableLiveData<Integer> selectedTaskListId = new MutableLiveData<>();
+    private final MutableLiveData<Integer> selectedTaskListId = new MutableLiveData<>(1); // Default to 1
 
     private LiveData<List<Task>> currentSource;
 
@@ -52,6 +51,14 @@ public class TaskViewModel extends AndroidViewModel {
         return isFiltering;
     }
 
+    public LiveData<Integer> getSelectedTaskListId() {
+        return selectedTaskListId;
+    }
+
+    public void setSelectedTaskListId(int taskListId) {
+        selectedTaskListId.setValue(taskListId);
+    }
+
     public void setFilter(LiveData<List<Task>> tasks) {
         if (currentSource != null) {
             filteredTasks.removeSource(currentSource);
@@ -74,30 +81,15 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
     public void insert(Task task) {
-        if (task.getTaskListId() == -1) {
-            // Handle the case where the taskListId is invalid
-            return;
-        }
         mRepository.insert(task);
     }
 
     public void update(Task task) {
-        if (task.getTaskListId() == -1) {
-            // Handle the case where the taskListId is invalid
-            return;
-        }
         mRepository.update(task);
         // Reapply filter after updating a task
         setFilter(currentSource);
     }
 
-    public LiveData<Integer> getSelectedTaskListId() {
-        return selectedTaskListId;
-    }
-
-    public void setSelectedTaskListId(int taskListId) {
-        selectedTaskListId.setValue(taskListId);
-    }
     public void delete(Task task) {
         mRepository.delete(task);
     }

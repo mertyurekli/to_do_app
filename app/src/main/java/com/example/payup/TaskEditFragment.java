@@ -44,14 +44,14 @@ public class TaskEditFragment extends Fragment {
         if (getArguments() != null) {
             taskId = getArguments().getInt("TASK_ID", -1);
             taskListId = getArguments().getInt("TASK_LIST_ID", -1);  // Retrieve the TaskList ID
-            Toast.makeText(getContext(), "Task List ID: " + taskListId, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(), "Task List ID: " + taskListId, Toast.LENGTH_SHORT).show();
 
-            if (taskListId == -1) {
-                Toast.makeText(getContext(), "Task List ID is invalid", Toast.LENGTH_SHORT).show();
-            }
+            //if (taskListId == -1) {
+             //   Toast.makeText(getContext(), "Task List ID is invalid", Toast.LENGTH_SHORT).show();
+
+            //}
         }
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,7 +75,11 @@ public class TaskEditFragment extends Fragment {
                     doneCheckBox.setChecked(task.isDone());
                     descriptionEditText.setText(task.getDescription());
                     dateButton.setText(task.getDate());
+                    taskListId = task.getTaskListId();
                 }
+                Toast.makeText(getContext(), "Task List ID: " + taskListId, Toast.LENGTH_SHORT).show();
+
+
             });
         }
 
@@ -138,6 +142,9 @@ public class TaskEditFragment extends Fragment {
             task.setId(taskId);
             mTaskViewModel.update(task);
         }
+
+        // Update the selected task list ID before closing
+        mTaskViewModel.setSelectedTaskListId(taskListId);
 
         requireActivity().getSupportFragmentManager().popBackStack();
     }
