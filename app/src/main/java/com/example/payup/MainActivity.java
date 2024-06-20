@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private TaskListAdapter adapter;
     private TaskViewModel taskViewModel;
     private int selectedTaskListId = 1;
+    private String CurrentTaskName = "Default Task List";
 
     private float startX;
     private Toolbar toolbar;
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
             fetchTasksForTaskList(selectedTaskListId);
             // Set the action bar title to the selected task list name
             setActionBarTitle(taskList.getName());
+            CurrentTaskName = taskList.getName();
             Toast.makeText(MainActivity.this, "Selected Task List: " + taskList.getName() + ", ID: " + taskList.getId(), Toast.LENGTH_SHORT).show();
             drawerLayout.closeDrawer(GravityCompat.START);  // Automatically close the drawer
         });
@@ -310,7 +312,8 @@ public class MainActivity extends AppCompatActivity {
         boolean isEditFragment = currentFragment instanceof TaskEditFragment;
 
         if (isTablet) {
-            getSupportActionBar().setTitle(R.string.app_name);
+            //getSupportActionBar().setTitle(R.string.app_name);
+            getSupportActionBar().setTitle(CurrentTaskName);
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -322,7 +325,8 @@ public class MainActivity extends AppCompatActivity {
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24);
             } else {
                 // Show the drawer menu button in phone mode if TaskListFragment is displayed
-                getSupportActionBar().setTitle(R.string.app_name);
+                //getSupportActionBar().setTitle(R.string.app_name);
+                getSupportActionBar().setTitle(CurrentTaskName);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
