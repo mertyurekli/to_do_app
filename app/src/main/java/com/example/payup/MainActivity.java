@@ -30,7 +30,6 @@ import com.example.payup.viewmodel.TaskViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
@@ -102,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
             selectedTaskListId = taskList.getId();  // Set the selected task list ID
             taskViewModel.setSelectedTaskListId(selectedTaskListId);
             fetchTasksForTaskList(selectedTaskListId);
+            // Set the action bar title to the selected task list name
+            setActionBarTitle(taskList.getName());
             // Show a toast message with the name and ID of the selected task list
             Toast.makeText(MainActivity.this, "Selected Task List: " + taskList.getName() + ", ID: " + taskList.getId(), Toast.LENGTH_SHORT).show();
             drawerLayout.closeDrawer(GravityCompat.START);  // Automatically close the drawer
@@ -213,7 +214,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
@@ -281,6 +281,28 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+    private void openTaskEditFragmentToAddTask(int taskListId) {
+        TaskEditFragment fragment = new TaskEditFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("TASK_LIST_ID", taskListId);  // Pass the selected TaskList ID
+        fragment.setArguments(bundle);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if (getResources().getBoolean(R.bool.isTablet)) {
+            transaction.replace(R.id.edit_fragment, fragment);
+        } else {
+            transaction.replace(R.id.fragment_container, fragment);
+        }
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public void setActionBarTitle(String title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
     private void updateToolbar() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         int backStackEntryCount = fragmentManager.getBackStackEntryCount();
@@ -292,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (isTablet) {
             // In tablet mode, always show the drawer menu button
+
             getSupportActionBar().setTitle(R.string.app_name);
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu);
