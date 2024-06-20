@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.payup.entities.Task;
@@ -74,6 +75,16 @@ public class TaskEditFragment extends Fragment {
                 Toast.makeText(getContext(), "Task List ID: " + taskListId, Toast.LENGTH_SHORT).show();
             });
         }
+
+        // Move the observer to onCreateView
+        mTaskViewModel.getSelectedTaskListId().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer selectedId) {
+                if (selectedId != null) {
+                    taskListId = selectedId;
+                }
+            }
+        });
 
         FloatingActionButton saveButton = view.findViewById(R.id.floatingActionButton);
         saveButton.setOnClickListener(v -> onClickSaveButton());
@@ -144,6 +155,14 @@ public class TaskEditFragment extends Fragment {
         // Update the selected task list ID before closing
         mTaskViewModel.setSelectedTaskListId(taskListId);
 
-        requireActivity().getSupportFragmentManager().popBackStack();
+        if (!getResources().getBoolean(R.bool.isTablet)) {
+            requireActivity().getSupportFragmentManager().popBackStack();
+        } else {
+            Toast.makeText(requireContext(), "Task saved", Toast.LENGTH_SHORT).show();
+            nameEditText.setText("");
+            descriptionEditText.setText("");
+            doneCheckBox.setChecked(false);
+            dateButton.setText(getCurrentDate());
+        }
     }
 }
