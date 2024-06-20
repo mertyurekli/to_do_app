@@ -47,11 +47,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task current = taskList.get(position);
 
-        // Detach listener, set state, attach listener
+        // Detach listener to avoid triggering it when setting state programmatically
         holder.taskDoneCheckBox.setOnCheckedChangeListener(null);
+
+        // Bind data to the view holder
         holder.bind(current);
+
+        // Set the checkbox state
         holder.taskDoneCheckBox.setChecked(current.isDone());
 
+        // Set the item click listener for task details
         holder.itemView.setOnClickListener(v -> {
             Toast.makeText(activity, "Task: " + current.getName() + "\nDescription: " + current.getDescription(), Toast.LENGTH_SHORT).show();
             if (activity.getResources().getBoolean(R.bool.isTablet)) {
@@ -71,12 +76,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             }
         });
 
+        // Attach listener to handle checkbox state change
         holder.taskDoneCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (current.isDone() != isChecked) {
+                // Update the task's done state
                 current.setDone(isChecked);
+
+                // Update the task in ViewModel
                 taskViewModel.update(current);
-                // Notify the specific item that its data has changed
-                notifyItemChanged(holder.getAdapterPosition());
             }
         });
     }
