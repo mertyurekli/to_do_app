@@ -163,6 +163,16 @@ public class TaskEditFragment extends Fragment {
             }
             // Reset the fragment for a clean state
             resetTaskDetails();
+
+            TaskEditFragment fragment = new TaskEditFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("TASK_LIST_ID", taskListId);  // Pass the selected TaskList ID
+            fragment.setArguments(bundle);
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.edit_fragment, fragment)
+                    .addToBackStack(null)
+                    .commit();
+
         }
     }
 
