@@ -1,8 +1,11 @@
 package com.example.payup;
 
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -13,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
@@ -35,6 +39,13 @@ public class MainActivity extends AppCompatActivity {
     private TaskViewModel taskViewModel;
     private int selectedTaskListId = -1;  // Initialize with an invalid ID
 
+    private float startX;
+    private Toolbar toolbar;
+
+    public static final int MENU_ITEM_BUTTON1 = 1;
+    public static final int MENU_ITEM_BUTTON2 = 2;
+    public static final int MENU_ITEM_BUTTON3 = 3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,10 +57,30 @@ public class MainActivity extends AppCompatActivity {
             setContentView(R.layout.activity_main);
         }
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        View leftClickableArea = findViewById(R.id.left_clickable_area);
         drawerLayout = findViewById(R.id.drawer_layout);
+
+        leftClickableArea.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = event.getX();
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        float endX = event.getX();
+                        if (endX - startX > 100) { // Dragged a certain distance
+                            drawerLayout.openDrawer(GravityCompat.START);
+                            return true;
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
 
         // Set toolbar navigation click listener
         toolbar.setNavigationOnClickListener(v -> openTaskListFragment());
@@ -97,6 +128,82 @@ public class MainActivity extends AppCompatActivity {
             openTaskEditFragment(taskId);
         }
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
+
+        getSupportFragmentManager().addOnBackStackChangedListener(
+                this::updateToolbar
+        );
+
+        updateToolbar();
+    }
+
+    @SuppressLint("ResourceType")
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.layout.toolbar_menu, menu);
+        menu.findItem(R.id.action_button1).setIntent(new Intent().putExtra("MENU_ID", MENU_ITEM_BUTTON1));
+        menu.findItem(R.id.action_button2).setIntent(new Intent().putExtra("MENU_ID", MENU_ITEM_BUTTON2));
+        menu.findItem(R.id.action_button3).setIntent(new Intent().putExtra("MENU_ID", MENU_ITEM_BUTTON3));
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        // Always show menu items in tablet mode
+        boolean isTablet = getResources().getBoolean(R.bool.isTablet);
+        if (isTablet) {
+            menu.findItem(R.id.action_button1).setVisible(true);
+            menu.findItem(R.id.action_button2).setVisible(true);
+            menu.findItem(R.id.action_button3).setVisible(true);
+        } else {
+            // Get the current fragment
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
+
+            // Hide menu items if the current fragment is TaskEditFragment
+            if (currentFragment instanceof TaskEditFragment) {
+                menu.findItem(R.id.action_button1).setVisible(false);
+                menu.findItem(R.id.action_button2).setVisible(false);
+                menu.findItem(R.id.action_button3).setVisible(false);
+            } else {
+                menu.findItem(R.id.action_button1).setVisible(true);
+                menu.findItem(R.id.action_button2).setVisible(true);
+                menu.findItem(R.id.action_button3).setVisible(true);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            if (fragmentManager.getBackStackEntryCount() > 0) {
+                fragmentManager.popBackStack();
+            } else {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+            return true;
+        }
+
+        int menuId = item.getIntent().getIntExtra("MENU_ID", -1);
+        switch (menuId) {
+            case MENU_ITEM_BUTTON1:
+                showToast("Button 1 clicked");
+                return true;
+            case MENU_ITEM_BUTTON2:
+                showToast("Button 2 clicked");
+                return true;
+            case MENU_ITEM_BUTTON3:
+                showToast("Button 3 clicked");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private void showCreateTaskListDialog() {
@@ -160,5 +267,48 @@ public class MainActivity extends AppCompatActivity {
         }
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    private void updateToolbar() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        int backStackEntryCount = fragmentManager.getBackStackEntryCount();
+
+        boolean isTablet = getResources().getBoolean(R.bool.isTablet);
+        Fragment currentFragment = fragmentManager.findFragmentById(isTablet ? R.id.edit_fragment : R.id.fragment_container);
+
+        boolean isEditFragment = currentFragment instanceof TaskEditFragment;
+
+        if (isTablet) {
+            // In tablet mode, always show the drawer menu button
+            getSupportActionBar().setTitle(R.string.app_name);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } else {
+            if (isEditFragment) {
+                // Show the back button in phone mode if TaskEditFragment is displayed
+                getSupportActionBar().setTitle("Task Details");
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24);
+            } else {
+                // Show the drawer menu button in phone mode if TaskListFragment is displayed
+                getSupportActionBar().setTitle(R.string.app_name);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
+        }
+
+        // Set toolbar navigation click listener
+        getSupportActionBar().setHomeButtonEnabled(true);
+        toolbar.setNavigationOnClickListener(v -> {
+            if (isEditFragment && !isTablet) {
+                fragmentManager.popBackStack();
+            } else {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+        // Update the options menu whenever the back stack changes
+        invalidateOptionsMenu();
     }
 }

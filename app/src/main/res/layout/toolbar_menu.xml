@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_button1"
+        android:icon="@drawable/menu"
+        android:title="Button 1"
+        android:showAsAction="always" />
+    <item
+        android:id="@+id/action_button2"
+        android:icon="@drawable/menu"
+        android:title="Button 2"
+        android:showAsAction="always" />
+    <item
+        android:id="@+id/action_button3"
+        android:icon="@drawable/menu"
+        android:title="Button 3"
+        android:showAsAction="always" />
+</menu>

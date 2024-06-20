@@ -44,12 +44,6 @@ public class TaskEditFragment extends Fragment {
         if (getArguments() != null) {
             taskId = getArguments().getInt("TASK_ID", -1);
             taskListId = getArguments().getInt("TASK_LIST_ID", -1);  // Retrieve the TaskList ID
-            //Toast.makeText(getContext(), "Task List ID: " + taskListId, Toast.LENGTH_SHORT).show();
-
-            //if (taskListId == -1) {
-             //   Toast.makeText(getContext(), "Task List ID is invalid", Toast.LENGTH_SHORT).show();
-
-            //}
         }
     }
 
@@ -78,8 +72,6 @@ public class TaskEditFragment extends Fragment {
                     taskListId = task.getTaskListId();
                 }
                 Toast.makeText(getContext(), "Task List ID: " + taskListId, Toast.LENGTH_SHORT).show();
-
-
             });
         }
 
@@ -126,6 +118,12 @@ public class TaskEditFragment extends Fragment {
         String description = descriptionEditText.getText().toString();
         boolean isDone = doneCheckBox.isChecked();
         String date = dateButton.getText().toString();
+
+        if (name.isEmpty()) {
+            // Show a toast indicating that task name cannot be empty
+            Toast.makeText(requireContext(), "Task name cannot be empty", Toast.LENGTH_SHORT).show();
+            return; // Exit method without saving
+        }
 
         // Ensure taskListId is used
         if (taskListId == -1) {

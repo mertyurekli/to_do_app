@@ -12,19 +12,23 @@
         android:id="@+id/checkBox2"
         android:layout_width="31dp"
         android:layout_height="33dp"
-        app:layout_constraintEnd_toStartOf="@+id/textViewTitle"
+        android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewTitle"
-        android:layout_width="299dp"
-        android:layout_height="26dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:text="Task Title"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="@+id/checkBox2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHeight_percent="0.80"
+        app:layout_constraintStart_toEndOf="@+id/checkBox2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.461"
+        app:layout_constraintWidth_percent="0.7" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -32,28 +32,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/menu"
-            app:title="Task List" />
+            app:title="Task List"
+            app:menu="@layout/toolbar_menu" />
 
-        <View
-            android:id="@+id/left_clickable_area"
-            android:layout_width="53dp"
-            android:layout_height="669dp"
-            android:layout_gravity="left"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" >
+
+            <View
+                android:id="@+id/left_clickable_area"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true" />
+        </FrameLayout>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
