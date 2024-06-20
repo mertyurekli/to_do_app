@@ -55,15 +55,12 @@ public class TaskListFragment extends Fragment {
             }
         });
 
-        // Observe selected task list ID
         mTaskViewModel.getSelectedTaskListId().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer selectedId) {
                 if (selectedId != null) {
                     taskListId = selectedId;
-                    mTaskViewModel.getTasksByTaskListId(selectedId).observe(getViewLifecycleOwner(), tasks -> {
-                        mTaskViewModel.setFilter(mTaskViewModel.getTasksByTaskListId(selectedId));
-                    });
+                    mTaskViewModel.setFilter(mTaskViewModel.getAllTasks(taskListId));
                 }
             }
         });
@@ -79,14 +76,14 @@ public class TaskListFragment extends Fragment {
         showAllTasksButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTaskViewModel.setFilter(mTaskViewModel.getAllTasks());
+                mTaskViewModel.setFilter(mTaskViewModel.getAllTasks(taskListId));
             }
         });
 
         showUnfinishedTasksButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTaskViewModel.setFilter(mTaskViewModel.getUnfinishedTasks());
+                mTaskViewModel.setFilter(mTaskViewModel.getUnfinishedTasks(taskListId));
             }
         });
 

@@ -142,9 +142,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchTasksForTaskList(int taskListId) {
-        taskViewModel.getTasksByTaskListId(taskListId).observe(this, tasks -> {
-            taskViewModel.setFilter(taskViewModel.getTasksByTaskListId(taskListId));
-        });
+        taskViewModel.setFilter(taskViewModel.getAllTasks(taskListId));
     }
 
     private void openTaskEditFragment(int taskId) {

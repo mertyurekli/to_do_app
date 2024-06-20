@@ -1,4 +1,5 @@
 package com.example.payup.repository;
+
 import android.content.Context;
 import androidx.lifecycle.LiveData;
 
@@ -11,18 +12,10 @@ import java.util.List;
 public class TaskRepository {
     private static TaskRepository INSTANCE;
     private TaskDao mTaskDao;
-    private LiveData<List<Task>> mAllTasks;
-
-    private LiveData<List<Task>> mFinishedTasks;
-
-    private LiveData<List<Task>> mUnfinishedTasks;
-
 
     private TaskRepository(Context context) {
         TaskDatabase db = TaskDatabase.getDatabase(context);
         mTaskDao = db.taskDao();
-        mAllTasks = mTaskDao.getAllTasks();
-        mFinishedTasks = mTaskDao.getFinishedTasks();
     }
 
     public static TaskRepository getInstance(Context context) {
@@ -35,20 +28,17 @@ public class TaskRepository {
         }
         return INSTANCE;
     }
-    public LiveData<List<Task>> getFinishedTasks() {
-        return mFinishedTasks;
+
+    public LiveData<List<Task>> getAllTasks(int taskListId) {
+        return mTaskDao.getAllTasks(taskListId);
     }
 
-
-    public LiveData<List<Task>> getUnfinishedTasks() {
-        return mTaskDao.getUnfinishedTasks();
+    public LiveData<List<Task>> getFinishedTasks(int taskListId) {
+        return mTaskDao.getFinishedTasks(taskListId);
     }
 
-    public LiveData<List<Task>> getTasksByTaskListId(int taskListId) {
-        return mTaskDao.getTasksByTaskListId(taskListId);
-    }
-    public LiveData<List<Task>> getAllTasks() {
-        return mAllTasks;
+    public LiveData<List<Task>> getUnfinishedTasks(int taskListId) {
+        return mTaskDao.getUnfinishedTasks(taskListId);
     }
 
     public LiveData<Task> getTaskById(int id) {
@@ -56,10 +46,6 @@ public class TaskRepository {
     }
 
     public void insert(Task task) {
-        if (task.getTaskListId() == 0) {
-            // Ensure a valid taskListId is set
-            task.setTaskListId(1);  // Set a default valid task list ID if not specified
-        }
         new insertAsyncTask(mTaskDao).execute(task);
     }
 
@@ -69,6 +55,10 @@ public class TaskRepository {
 
     public void delete(Task task) {
         new deleteAsyncTask(mTaskDao).execute(task);
+    }
+
+    public void deleteFinishedTasks(int taskListId) {
+        new deleteFinishedTasksAsyncTask(mTaskDao, taskListId).execute();
     }
 
     private static class insertAsyncTask extends android.os.AsyncTask<Task, Void, Void> {
@@ -84,6 +74,7 @@ public class TaskRepository {
             return null;
         }
     }
+
     private static class updateAsyncTask extends android.os.AsyncTask<Task, Void, Void> {
         private TaskDao mAsyncTaskDao;
 
@@ -112,23 +103,19 @@ public class TaskRepository {
         }
     }
 
-    public void deleteFinishedTasks() {
-        new deleteFinishedTasksAsyncTask(mTaskDao).execute();
-    }
-
     private static class deleteFinishedTasksAsyncTask extends android.os.AsyncTask<Void, Void, Void> {
         private TaskDao mAsyncTaskDao;
+        private int mTaskListId;
 
-        deleteFinishedTasksAsyncTask(TaskDao dao) {
+        deleteFinishedTasksAsyncTask(TaskDao dao, int taskListId) {
             mAsyncTaskDao = dao;
+            mTaskListId = taskListId;
         }
 
         @Override
         protected Void doInBackground(final Void... params) {
-            mAsyncTaskDao.deleteFinishedTasks();
+            mAsyncTaskDao.deleteFinishedTasks(mTaskListId);
             return null;
         }
     }
-
-
 }
