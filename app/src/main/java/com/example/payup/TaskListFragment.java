@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.payup.R;
-import com.example.payup.TaskEditFragment;
 import com.example.payup.adapter.TaskAdapter;
 import com.example.payup.entities.Task;
 import com.example.payup.viewmodel.TaskViewModel;

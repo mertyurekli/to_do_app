@@ -27,9 +27,6 @@ public class TaskViewModel extends AndroidViewModel {
         return filteredTasks;
     }
 
-    public LiveData<Boolean> getIsFiltering() {
-        return isFiltering;
-    }
 
     public LiveData<Integer> getSelectedTaskListId() {
         return selectedTaskListId;
