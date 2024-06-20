@@ -21,6 +21,7 @@ import com.example.payup.adapter.TaskAdapter;
 import com.example.payup.entities.Task;
 import com.example.payup.viewmodel.TaskViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskListFragment extends Fragment {
@@ -50,25 +51,27 @@ public class TaskListFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        // Observe tasks and update RecyclerView when ready
-        mTaskViewModel.getFilteredTasks().observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
-            @Override
-            public void onChanged(@Nullable final List<Task> tasks) {
-                if (tasks != null) {
-                    adapter.setTasks(tasks);
-                    recyclerView.setVisibility(View.VISIBLE);
-                } else {
-                    recyclerView.setVisibility(View.GONE);
-                }
-            }
-        });
-
+        // Observe selected task list ID
         mTaskViewModel.getSelectedTaskListId().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer selectedId) {
                 if (selectedId != null) {
                     taskListId = selectedId;
                     mTaskViewModel.setFilter(mTaskViewModel.getAllTasks(taskListId));
+                }
+            }
+        });
+
+        // Observe filtered tasks and update RecyclerView when ready
+        mTaskViewModel.getFilteredTasks().observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
+            @Override
+            public void onChanged(@Nullable final List<Task> tasks) {
+                if (tasks != null && taskListId != -1) {
+                    adapter.setTasks(tasks);
+                    recyclerView.setVisibility(View.VISIBLE);
+                } else {
+                    adapter.setTasks(new ArrayList<>()); // Clear tasks to avoid displaying old data
+                    recyclerView.setVisibility(View.GONE);
                 }
             }
         });
@@ -84,22 +87,28 @@ public class TaskListFragment extends Fragment {
         showAllTasksButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTaskViewModel.setFilter(mTaskViewModel.getAllTasks(taskListId));
+                if (taskListId != -1) {
+                    mTaskViewModel.setFilter(mTaskViewModel.getAllTasks(taskListId));
+                }
             }
         });
 
         showUnfinishedTasksButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTaskViewModel.setFilter(mTaskViewModel.getUnfinishedTasks(taskListId));
+                if (taskListId != -1) {
+                    mTaskViewModel.setFilter(mTaskViewModel.getUnfinishedTasks(taskListId));
+                }
             }
         });
 
         deleteFinishedTasksButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTaskViewModel.deleteFinishedTasks();
-                Toast.makeText(getContext(), "Finished tasks deleted", Toast.LENGTH_SHORT).show();
+                if (taskListId != -1) {
+                    mTaskViewModel.deleteFinishedTasks();
+                    Toast.makeText(getContext(), "Finished tasks deleted", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
