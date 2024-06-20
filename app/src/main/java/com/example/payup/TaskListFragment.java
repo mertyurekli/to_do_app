@@ -83,7 +83,7 @@ public class TaskListFragment extends Fragment {
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false; // We are not interested in move events
+                return false;
             }
 
             @Override
@@ -95,7 +95,6 @@ public class TaskListFragment extends Fragment {
                     mTaskViewModel.delete(task);
 
                     Toast.makeText(requireContext(), "Task deleted: " + task.getName(), Toast.LENGTH_SHORT).show();
-                    // Handle additional actions here, such as deleting the task
                 }
             }
         };

@@ -95,7 +95,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     public void setTasks(List<Task> tasks) {
         this.taskList = new ArrayList<>(tasks); // Create a new list to avoid modification issues
-        notifyDataSetChanged(); // This should only be called once initially or when the entire list changes
+        notifyDataSetChanged();
     }
 
     public Task getTaskAtPosition(int position) {

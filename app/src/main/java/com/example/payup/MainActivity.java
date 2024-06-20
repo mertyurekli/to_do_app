@@ -102,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
             fetchTasksForTaskList(selectedTaskListId);
             // Set the action bar title to the selected task list name
             setActionBarTitle(taskList.getName());
-            // Show a toast message with the name and ID of the selected task list
             Toast.makeText(MainActivity.this, "Selected Task List: " + taskList.getName() + ", ID: " + taskList.getId(), Toast.LENGTH_SHORT).show();
             drawerLayout.closeDrawer(GravityCompat.START);  // Automatically close the drawer
         });
@@ -118,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // Check if editing a task (if taskId is provided)
+        // Check if editing a task
         int taskId = getIntent().getIntExtra("TASK_ID", -1);
         if (taskId != -1) {
             openTaskEditFragment(taskId);
@@ -142,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        // Always show menu items in tablet mode
         boolean isTablet = getResources().getBoolean(R.bool.isTablet);
         if (isTablet) {
             menu.findItem(R.id.action_show_all_tasks).setVisible(true);
@@ -312,8 +310,6 @@ public class MainActivity extends AppCompatActivity {
         boolean isEditFragment = currentFragment instanceof TaskEditFragment;
 
         if (isTablet) {
-            // In tablet mode, always show the drawer menu button
-
             getSupportActionBar().setTitle(R.string.app_name);
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu);

@@ -131,9 +131,8 @@ public class TaskEditFragment extends Fragment {
         String date = dateButton.getText().toString();
 
         if (name.isEmpty()) {
-            // Show a toast indicating that task name cannot be empty
             Toast.makeText(requireContext(), "Task name cannot be empty", Toast.LENGTH_SHORT).show();
-            return; // Exit method without saving
+            return;
         }
 
         if (taskListId == -1) {
@@ -151,7 +150,6 @@ public class TaskEditFragment extends Fragment {
             mTaskViewModel.update(task);
         }
 
-        // Update the selected task list ID before closing
         mTaskViewModel.setSelectedTaskListId(taskListId);
 
         if (!getResources().getBoolean(R.bool.isTablet)) {
@@ -182,7 +180,6 @@ public class TaskEditFragment extends Fragment {
         doneCheckBox.setChecked(false);
         dateButton.setText(getCurrentDate());
 
-        // Reset taskId and isNewTask for a new task
         taskId = -1;
         isNewTask = true;
     }
