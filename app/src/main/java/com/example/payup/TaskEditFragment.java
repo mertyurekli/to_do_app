@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -30,6 +31,7 @@ public class TaskEditFragment extends Fragment {
     private String date;
     private boolean isNewTask = true;
     private int taskId = -1;  // Task ID
+    private int taskListId = -1;  // Task List ID
 
     public TaskEditFragment() {
         // Required empty public constructor
@@ -41,18 +43,21 @@ public class TaskEditFragment extends Fragment {
         mTaskViewModel = new ViewModelProvider(requireActivity()).get(TaskViewModel.class);
         if (getArguments() != null) {
             taskId = getArguments().getInt("TASK_ID", -1);
+            taskListId = getArguments().getInt("TASK_LIST_ID", -1);  // Retrieve the TaskList ID
+            Toast.makeText(getContext(), "Task List ID: " + taskListId, Toast.LENGTH_SHORT).show();
+
+            if (taskListId == -1) {
+                Toast.makeText(getContext(), "Task List ID is invalid", Toast.LENGTH_SHORT).show();
+            }
         }
-
-
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_task_edit, container, false);
 
-        // Initialize views
         nameEditText = view.findViewById(R.id.textInputEditText2);
         descriptionEditText = view.findViewById(R.id.textInputEditText);
         doneCheckBox = view.findViewById(R.id.checkBox);
@@ -62,7 +67,6 @@ public class TaskEditFragment extends Fragment {
         dateButton.setText(getCurrentDate());
         dateButton.setOnClickListener(v -> openDatePicker());
 
-        // Check if editing existing task
         if (taskId != -1) {
             isNewTask = false;
             mTaskViewModel.getTaskById(taskId).observe(getViewLifecycleOwner(), task -> {
@@ -118,8 +122,15 @@ public class TaskEditFragment extends Fragment {
         String description = descriptionEditText.getText().toString();
         boolean isDone = doneCheckBox.isChecked();
         String date = dateButton.getText().toString();
-        Task task = new Task(name, description, date, isDone, 1);
 
+        // Ensure taskListId is used
+        if (taskListId == -1) {
+            // Handle the case when taskListId is not set
+            Toast.makeText(getContext(), "Task List ID is invalid", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Task task = new Task(name, description, date, isDone, taskListId);
 
         if (isNewTask) {
             mTaskViewModel.insert(task);
@@ -128,7 +139,6 @@ public class TaskEditFragment extends Fragment {
             mTaskViewModel.update(task);
         }
 
-        // Navigate back or close the fragment
         requireActivity().getSupportFragmentManager().popBackStack();
     }
 }

@@ -19,6 +19,8 @@ public class TaskViewModel extends AndroidViewModel {
     private final MediatorLiveData<List<Task>> filteredTasks = new MediatorLiveData<>();
     private final MutableLiveData<Boolean> isFiltering = new MutableLiveData<>(false);
 
+    private MutableLiveData<Integer> selectedTaskListId = new MutableLiveData<>();
+
     private LiveData<List<Task>> currentSource;
 
     public TaskViewModel(Application application) {
@@ -72,15 +74,30 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
     public void insert(Task task) {
+        if (task.getTaskListId() == -1) {
+            // Handle the case where the taskListId is invalid
+            return;
+        }
         mRepository.insert(task);
     }
 
     public void update(Task task) {
+        if (task.getTaskListId() == -1) {
+            // Handle the case where the taskListId is invalid
+            return;
+        }
         mRepository.update(task);
         // Reapply filter after updating a task
         setFilter(currentSource);
     }
 
+    public LiveData<Integer> getSelectedTaskListId() {
+        return selectedTaskListId;
+    }
+
+    public void setSelectedTaskListId(int taskListId) {
+        selectedTaskListId.setValue(taskListId);
+    }
     public void delete(Task task) {
         mRepository.delete(task);
     }

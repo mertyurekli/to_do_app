@@ -33,7 +33,6 @@ public class TaskListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_task_list, container, false);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.r_view);
@@ -42,31 +41,28 @@ public class TaskListFragment extends Fragment {
         Button showUnfinishedTasksButton = rootView.findViewById(R.id.showUnfinishedTasksButton);
         Button deleteFinishedTasksButton = rootView.findViewById(R.id.deleteFinishedTasksButton);
 
-        // Initialize ViewModel
         mTaskViewModel = new ViewModelProvider(requireActivity()).get(TaskViewModel.class);
 
         adapter = new TaskAdapter(new TaskAdapter.TaskDiff(), requireActivity(), requireActivity().getSupportFragmentManager(), mTaskViewModel);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        // Observe filtered tasks
         mTaskViewModel.getFilteredTasks().observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
             @Override
             public void onChanged(@Nullable final List<Task> tasks) {
                 adapter.setDisplayedTasks(tasks, mTaskViewModel.getIsFiltering().getValue());
+
             }
         });
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Reset TASK_ID to -1
                 requireActivity().getIntent().removeExtra("TASK_ID");
                 openTaskEditFragmentToAddTask();
             }
         });
 
-        // Set onClickListeners for the buttons programmatically
         showAllTasksButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,14 +89,18 @@ public class TaskListFragment extends Fragment {
     }
 
     private void openTaskEditFragmentToAddTask() {
+        TaskEditFragment fragment = new TaskEditFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("TASK_LIST_ID", mTaskViewModel.getSelectedTaskListId().getValue());  // Get the selected TaskList ID from ViewModel
+        fragment.setArguments(bundle);
         if (!getResources().getBoolean(R.bool.isTablet)) {
             requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new TaskEditFragment())
+                    .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
                     .commit();
         } else {
             requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.edit_fragment, new TaskEditFragment())
+                    .replace(R.id.edit_fragment, fragment)
                     .addToBackStack(null)
                     .commit();
         }

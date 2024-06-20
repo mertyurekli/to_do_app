@@ -61,12 +61,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
 
         public void bind(final TaskList taskList, final OnItemClickListener listener) {
             taskListNameView.setText(taskList.getName());
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(taskList);
-                }
-            });
+            itemView.setOnClickListener(v -> listener.onItemClick(taskList));
         }
     }
 }
