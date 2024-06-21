@@ -1,2 +1,2 @@
-# payment_app
-Payment App for Friends
+# to_do_app
+To Do App developed with Android Studio Java
