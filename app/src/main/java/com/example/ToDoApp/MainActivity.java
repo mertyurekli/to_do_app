@@ -1,4 +1,4 @@
-package com.example.payup;
+package com.example.ToDoApp;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -22,10 +22,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.payup.adapter.TaskListAdapter;
-import com.example.payup.entities.TaskList;
-import com.example.payup.viewmodel.TaskListViewModel;
-import com.example.payup.viewmodel.TaskViewModel;
+import com.example.ToDoApp.adapter.TaskListAdapter;
+import com.example.ToDoApp.entities.TaskList;
+import com.example.ToDoApp.viewmodel.TaskListViewModel;
+import com.example.ToDoApp.viewmodel.TaskViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;

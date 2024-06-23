@@ -1,11 +1,11 @@
-package com.example.payup.repository;
+package com.example.ToDoApp.repository;
 
 import android.content.Context;
 import androidx.lifecycle.LiveData;
 
-import com.example.payup.TaskDatabase;
-import com.example.payup.dao.TaskListDao;
-import com.example.payup.entities.TaskList;
+import com.example.ToDoApp.TaskDatabase;
+import com.example.ToDoApp.dao.TaskListDao;
+import com.example.ToDoApp.entities.TaskList;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;

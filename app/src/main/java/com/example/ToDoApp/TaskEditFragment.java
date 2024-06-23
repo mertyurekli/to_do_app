@@ -1,4 +1,4 @@
-package com.example.payup;
+package com.example.ToDoApp;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -15,8 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.payup.entities.Task;
-import com.example.payup.viewmodel.TaskViewModel;
+import com.example.ToDoApp.entities.Task;
+import com.example.ToDoApp.viewmodel.TaskViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Calendar;

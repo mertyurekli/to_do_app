@@ -1,4 +1,4 @@
-package com.example.payup.viewmodel;
+package com.example.ToDoApp.viewmodel;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.payup.entities.Task;
-import com.example.payup.repository.TaskRepository;
+import com.example.ToDoApp.entities.Task;
+import com.example.ToDoApp.repository.TaskRepository;
 
 import java.util.List;
 

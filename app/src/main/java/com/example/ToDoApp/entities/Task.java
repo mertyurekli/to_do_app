@@ -1,4 +1,4 @@
-package com.example.payup.entities;
+package com.example.ToDoApp.entities;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

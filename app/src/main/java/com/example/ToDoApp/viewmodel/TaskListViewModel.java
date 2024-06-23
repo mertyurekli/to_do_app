@@ -1,11 +1,11 @@
-package com.example.payup.viewmodel;
+package com.example.ToDoApp.viewmodel;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.payup.entities.TaskList;
-import com.example.payup.repository.TaskListRepository;
+import com.example.ToDoApp.entities.TaskList;
+import com.example.ToDoApp.repository.TaskListRepository;
 
 import java.util.List;
 

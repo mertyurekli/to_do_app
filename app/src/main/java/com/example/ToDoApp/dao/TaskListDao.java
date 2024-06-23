@@ -1,4 +1,4 @@
-package com.example.payup.dao;
+package com.example.ToDoApp.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -7,7 +7,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.payup.entities.TaskList;
+import com.example.ToDoApp.entities.TaskList;
 
 import java.util.List;
 

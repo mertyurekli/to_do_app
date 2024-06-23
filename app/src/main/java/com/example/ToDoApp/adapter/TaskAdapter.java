@@ -1,4 +1,4 @@
-package com.example.payup.adapter;
+package com.example.ToDoApp.adapter;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,11 +14,11 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.payup.MainActivity;
-import com.example.payup.R;
-import com.example.payup.TaskEditFragment;
-import com.example.payup.entities.Task;
-import com.example.payup.viewmodel.TaskViewModel;
+import com.example.ToDoApp.MainActivity;
+import com.example.ToDoApp.R;
+import com.example.ToDoApp.TaskEditFragment;
+import com.example.ToDoApp.entities.Task;
+import com.example.ToDoApp.viewmodel.TaskViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
